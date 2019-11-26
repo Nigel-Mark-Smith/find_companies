@@ -1,0 +1,17 @@
+Install software on PC.
+=======================
+
+1. Install Perl
+
+Download ActiveState Perl for Windows. This involves creating your own user and a personal 
+Perl project fork.
+
+https://www.activestate.com/products/activeperl/downloads/
+https://platform.activestate.com/sign-in
+
+2. Install NotePad++
+
+Download NotePad++. This is not a full IDE but will help with Perl and SQL syntax.
+
+https://notepad-plus-plus.org/downloads/
+

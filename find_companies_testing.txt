@@ -96,7 +96,6 @@ APPENDIX A
 
 input.csv
 ---------
-
 "ADENTRO CONSULTING LIMITED","07595155","","","4 WARREN FARM CLOSE","","EPSOM","SURREY","","KT17 3AJ","Private Limited Company","Active - Proposal to Strike off","United Kingdom","","07/04/2011","30","11","31/08/2020","30/11/2018","","05/05/2017","07/04/2016","0","0","0","0","74909 - Other professional, scientific and technical activities n.e.c.","","","","0","0","http://business.data.gov.uk/id/company/07595155","16/05/2011","INSIDE FIDESSA LTD","","","","","","","","","","","","","","","","","","","17/08/2020","03/08/2019"
 "FIDESSA BUY-SIDE LIMITED","03656437","","","C/O ION","3RD FLOOR, ONE NEW CHANGE","LONDON","","ENGLAND","EC4M 9AF","Private Limited Company","Active","United Kingdom","","26/10/1998","31","12","30/09/2020","31/12/2018","FULL","23/11/2016","26/10/2015","9","2","0","7","62012 - Business and domestic software development","62020 - Information technology consultancy activities","62090 - Other information technology service activities","","0","0","http://business.data.gov.uk/id/company/03656437","03/08/2012","FIDESSA LATENTZERO LIMITED","15/05/2007","LATENTZERO LTD.","","","","","","","","","","","","","","","","","09/11/2020","26/10/2019"
 "FIDESSA GROUP HOLDINGS LIMITED","03234176","","","C/O ION","3RD FLOOR, ONE NEW CHANGE","LONDON","","ENGLAND","EC4M 9AF","Private Limited Company","Active","United Kingdom","","06/08/1996","31","12","30/09/2020","31/12/2018","FULL","09/09/2016","12/08/2015","2","2","0","0","70100 - Activities of head offices","82990 - Other business support service activities n.e.c.","","","0","0","http://business.data.gov.uk/id/company/03234176","12/10/2018","FIDESSA GROUP HOLDINGS PLC","12/10/2018","FIDESSA GROUP PLC","01/05/2007","ROYALBLUE GROUP PLC","","","","","","","","","","","","","","","21/09/2020","07/09/2019"
@@ -108,7 +107,6 @@ input.csv
 
 criteria.csv
 ------------
-
 0,^ITECCO,STRAT
 6,.*
 7,.*
@@ -121,7 +119,6 @@ criteria.csv
 
 criteriaAgencies.csv
 --------------------
-
 0,.*
 6,.*
 7,.*
@@ -132,7 +129,6 @@ criteriaAgencies.csv
 
 criteriaIT.csv
 --------------
-
 0,.*
 6,.*
 7,.*
@@ -143,24 +139,20 @@ criteriaIT.csv
 
 criteriaEmpty.csv
 -----------------
-
 *** IS AN EMPTY FILE ***
 
 criteriaInvalidColumn1.csv
 --------------------------
-
 50,*
 51,*
 
 criteriaInvalidColumn2.csv
 --------------------------
-
 30,*
 3a,*
 
 criteriaInvalidOrder.csv
 ------------------------
-
 0,.*
 7,.*
 12,.*
@@ -168,19 +160,16 @@ criteriaInvalidOrder.csv
 
 criteriaMissing1.csv
 --------------------
-
 33,.*,.*
 34,,.*
 
 criteriaMissing2.csv
 --------------------
-
 ,.*,.*
 33,,.*
 
 criteriaMissing3.csv
 --------------------
-
 32,.*,.*
 
 33,.*,.*

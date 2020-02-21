@@ -51,9 +51,15 @@
 # The third SIC code used to classify the company
 # The fourth SIC code used to classify the company
 #
-# This scripts does limited checks on command line arguments and the contents of
-# the configuration file specified. It will exit displaying an error message if an
+# This scripts does limited checks on:
+#
+# - The command line arguments given
+# - The configuration file specified 
+# - The number of data fields in the input file specified
+#
+# It will exit displaying an error message if an
 # issue with either of these is found. 
+
 
 ###############
 ### DECLARE ###
@@ -65,11 +71,12 @@ my $input_filename;
 my $criteria_file;
 my $criteria_filename;
 my @criteria_specifications;
+my @field_names;
 
 # Documentation indicates the each line in the csv data file
-# contains 37 values ( data columns )
+# contains 55 values ( data columns )
 
-my $max_column = 37;
+my $max_column = 55;
 
 ##################
 ### PROCEDURES ###
@@ -263,6 +270,15 @@ $criteria_filename = $ARGV[1];
 
 $input_file = "<".$input_filename;
 open (INPUT,$input_file) or DisplayError ( "ERROR : Input file $input_filename could not be openned" );
+@field_names = split(',',<INPUT>);
+
+if ( $max_column != @field_names ) {
+
+	DisplayError ( "ERROR : The number of data fields in the input file has changed from $max_column  " );
+}
+
+
+print "The number of fields is: $max_column\n";
 
 # Open criteria file and read data.
 

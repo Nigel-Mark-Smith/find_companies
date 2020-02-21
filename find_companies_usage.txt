@@ -52,6 +52,12 @@ The second SIC code used to classify the company
 The third SIC code used to classify the company
 The fourth SIC code used to classify the company
  
-This scripts does limited checks on command line arguments and the contents of
-the configuration file specified. It will exit displaying an error message if an
+This scripts does limited checks on:
+
+- The Command line arguments given
+- The configuration file specified 
+- The number of data fields in the input file specified
+
+
+It will exit displaying an error message if an
 issue with either of these is found. 

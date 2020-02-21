@@ -277,9 +277,6 @@ if ( $max_column != @field_names ) {
 	DisplayError ( "ERROR : The number of data fields in the input file has changed from $max_column  " );
 }
 
-
-print "The number of fields is: $max_column\n";
-
 # Open criteria file and read data.
 
 $criteria_file = "<".$criteria_filename;

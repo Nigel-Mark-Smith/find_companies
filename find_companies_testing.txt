@@ -8,7 +8,7 @@ true for the PC environemnt where this script is tested:
 1. ActiveState Perl should be installed ( See Installation document ).
 2. Script 'find_companies.pl' should be installed in directory 'c:\find_companies'
 3. Text test files with names and contents as specified in APPENDIX A should be present
-   in 'c:\find_companies'
+   in 'c:\find_companies\testing'
 
 
 1. Error handling commands.
@@ -21,67 +21,70 @@ perl find_companies.pl
 
 Result: ->  ERROR : This script requires an input and a criteria file name as arguments
 
-perl find_companies.pl c:\find_companies\input.csv 
+perl find_companies.pl testing\input.csv 
 
 Result: ->  ERROR : This script requires an input and a criteria file name as arguments 
 
-perl find_companies.pl c:\find_companies\no_input.csv c:\find_companies\criteria.csv
+perl find_companies.pl testing\no_input.csv testing\criteria.csv
 
-Result: ->  ERROR : Input file c:\find_companies\no_input.csv could not be openned
+Result: ->  ERROR : Input file c:\find_companies\testing\no_input.csv could not be openned
 
-perl find_companies.pl c:\find_companies\input.csv c:\find_companies\no_criteria.csv
+perl find_companies.pl testing\input.csv testing\no_criteria.csv
 
-Result: ->  ERROR : Criteria file c:\find_companies\no_criteria.csv could not be openned
+Result: ->  ERROR : Criteria file testing\no_criteria.csv could not be openned
 
 b. Criteria file contents
 -------------------------
 
-perl find_companies.pl c:\find_companies\input.csv c:\find_companies\criteriaEmpty.csv
+perl find_companies.pl testing\input.csv testing\criteriaEmpty.csv
 
-Result: -> ERROR : Criteria file c:\find_companies\criteriaEmpty.csv is empty
+Result: -> ERROR : Criteria file c:\find_companies\testing\criteriaEmpty.csv is empty
 
-perl find_companies.pl c:\find_companies\input.csv c:\find_companies\criteriaInvalidColumn1.csv
+perl find_companies.pl testing\input.csv testing\criteriaInvalidColumn1.csv
 
-Result: ->  ERROR : Invalid data column number 50 used on line 1 of c:\find_companies\criteriaInvalidColumn1.csv
+Result: ->  ERROR : Invalid data column name 50 used on line 1 of c:\find_companies\testing\criteriaInvalidColumn1.csv see file c:\find_companies\field_names.txt
 
-perl find_companies.pl c:\find_companies\input.csv c:\find_companies\criteriaInvalidColumn2.csv
+perl find_companies.pl testing\input.csv testing\criteriaInvalidColumn2.csv
 
-Result: ->  ERROR : Invalid data column number 3a used on line 2 of c:\find_companies\criteriaInvalidColumn2.csv
-
-perl find_companies.pl c:\find_companies\input.csv c:\find_companies\criteriaInvalidOrder.csv
-
-Result: ->  ERROR : Data column number 11 used on line 4 of c:\find_companies\criteriaInvalidOrder.csv should be higher than 12
+Result: ->  ERROR : Invalid data column name DummyName used on line 1 of c:\find_companies\testing\criteriaInvalidColumn2.csv see file c:\find_companies\field_names.txt
 
 perl find_companies.pl c:\find_companies\input.csv c:\find_companies\criteriaMissing1.csv
 
-Result: -> ERROR : Missing column number or match criteria on line 2 of c:\find_companies\criteriaMissing1.csv
+Result: -> ERROR : Missing column name or match criteria on line 2 of c:\find_companies\testing\criteriaMissing1.csv
 
-perl find_companies.pl c:\find_companies\input.csv c:\find_companies\criteriaMissing2.csv
+perl find_companies.pl testing\input.csv testing\criteriaMissing2.csv
 
-Result: -> ERROR : Missing column number or match criteria on line 1 of c:\find_companies\criteriaMissing2.csv
+Result: -> ERROR : Invalid data column name  used on line 1 of c:\find_companies\testing\criteriaMissing2.csv see file c:\find_companies\field_names.txt
 
-perl companies>perl find_companies.pl c:\find_companies\input.csv c:\find_companies\criteriaMissing3.csv
+perl find_companies.pl testing\input.csv testing\criteriaMissing3.csv
 
-Result: -> ERROR : Missing column number or match criteria on line 2 of c:\find_companies\criteriaMissing3.csv
+Result: -> ERROR : Missing column name or match criteria on line 2 of c:\find_companies\testing\criteriaMissing3.csv
 
 c. Input file contents
 ----------------------
 
-perl find_companies.pl c:\find_companies\inputNew.csv c:\find_companies\criteria.csv
+perl find_companies.pl testing\inputNew.csv testing\criteria.csv
 
 Result: -> ERROR : The number of data fields in the input file has changed from 55
 
 2. Functional testing commands
 ==============================
 
-perl find_companies.pl c:\find_companies\input.csv c:\find_companies\criteria.csv
+perl find_companies.pl testing\input.csv testing\criteria.csv
 
 Result: ->
 
 ITECCO LIMITED,CHEADLE,CHESHIRE,ENGLAND,Active,78109 - Other activities of employment placement agencies,,,
 STRATOSPHEREC LIMITED,WORTHING,WEST SUSSEX,UNITED KINGDOM,Active,96090 - Other service activities n.e.c.,,,
 
-perl find_companies.pl c:\find_companies\input.csv c:\find_companies\criteriaAgencies.csv
+perl find_companies.pl testing\input.csv testing\criteriaReversed.csv
+
+Result: ->
+
+,,,78109 - Other activities of employment placement agencies,Active,ENGLAND,CHESHIRE,CHEADLE,ITECCO LIMITED
+,,,96090 - Other service activities n.e.c.,Active,UNITED KINGDOM,WEST SUSSEX,WORTHING,STRATOSPHEREC LIMITED
+
+perl find_companies.pl testing\input.csv testing\criteriaAgencies.csv
 
 Result: ->
 
@@ -89,7 +92,7 @@ ITECCO LIMITED,CHEADLE,CHESHIRE,ENGLAND,Active,78109 - Other activities of emplo
 VITECCOM LIMITED,LONDON,,ENGLAND,Active,96090 - Other service activities n.e.c.,http://business.data.gov.uk/id/company/11571757
 STRATOSPHEREC LIMITED,WORTHING,WEST SUSSEX,UNITED KINGDOM,Active,96090 - Other service activities n.e.c.,http://business.data.gov.uk/id/company/08840936
 
-perl find_companies.pl c:\find_companies\input.csv c:\find_companies\
+perl find_companies.pl testing\input.csv testing\criteriaIT.csv
 
 Result: ->
 
@@ -129,37 +132,50 @@ CompanyName, CompanyNumber,RegAddress.CareOf,RegAddress.POBox,RegAddress.Address
 criteria.csv
 ------------
 
-0,^ITECCO,STRAT
-6,.*
-7,.*
-8,.*
-11,Active
-26,.*
-27,.*
-28,.*
-29,.*
+CompanyName,^ITECCO,STRAT
+RegAddress.PostTown,.*
+RegAddress.County,.*
+RegAddress.Country,.*
+CompanyStatus,Active
+SICCode.SicText_1,.*
+SICCode.SicText_2,.*
+SICCode.SicText_3,.*
+SICCode.SicText_4,.*
+
+criteriaReversed.csv
+------------
+
+SICCode.SicText_4,.*
+SICCode.SicText_3,.*
+SICCode.SicText_2,.*
+SICCode.SicText_1,.*
+CompanyStatus,Active
+RegAddress.Country,.*
+RegAddress.County,.*
+RegAddress.PostTown,.*
+CompanyName,^ITECCO,STRAT
 
 criteriaAgencies.csv
 --------------------
 
-0,.*
-6,.*
-7,.*
-8,.*
-11,Active
-26,78109,78101,78200,96090
-32,.*
+CompanyName,.*
+RegAddress.PostTown,.*
+RegAddress.County,.*
+RegAddress.Country,.*
+CompanyStatus,Active
+SICCode.SicText_1,78109,78101,78200,96090
+URI,.*
 
 criteriaIT.csv
 --------------
 
-0,.*
-6,.*
-7,.*
-8,.*
-11,Active
-26,620[0-9]*
-32,.*
+CompanyName,.*
+RegAddress.PostTown,.*
+RegAddress.County,.*
+RegAddress.Country,.*
+CompanyStatus,Active
+SICCode.SicText_1,620[0-9]*
+URI,.*
 
 criteriaEmpty.csv
 -----------------
@@ -175,32 +191,26 @@ criteriaInvalidColumn1.csv
 criteriaInvalidColumn2.csv
 --------------------------
 
-30,*
-3a,*
+DummyName,*
+DummyName.1,*
 
-criteriaInvalidOrder.csv
-------------------------
-
-0,.*
-7,.*
-12,.*
-11,.*
 
 criteriaMissing1.csv
 --------------------
 
-33,.*,.*
-34,,.*
+PreviousName_1.CONDATE,.*,.*
+PreviousName_1.CompanyName,,.*
 
 criteriaMissing2.csv
 --------------------
 
 ,.*,.*
-33,,.*
+PreviousName_1.CONDATE,,.*
+
 
 criteriaMissing3.csv
 --------------------
 
-32,.*,.*
+LimitedPartnerships.NumLimPartners,.*,.*
 
-33,.*,.*
+URI,.*,.*

@@ -1,0 +1,9 @@
+SICCode.SicText_4,.*
+SICCode.SicText_3,.*
+SICCode.SicText_2,.*
+SICCode.SicText_1,.*
+CompanyStatus,Active
+RegAddress.Country,.*
+RegAddress.County,.*
+RegAddress.PostTown,.*
+CompanyName,^ITECCO,STRAT

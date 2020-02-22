@@ -1,7 +1,7 @@
-0,.*
-6,.*
-7,.*
-8,.*
-11,Active
-26,78109,78101,78200,96090
-32,.*
+CompanyName,.*
+RegAddress.PostTown,.*
+RegAddress.County,.*
+RegAddress.Country,.*
+CompanyStatus,Active
+SICCode.SicText_1,78109,78101,78200,96090
+URI,.*

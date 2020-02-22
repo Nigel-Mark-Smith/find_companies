@@ -16,7 +16,9 @@ find_companies <companies data file name> <configuration file name>
 A typical invokation of this script where the output is captured to file would
 be as follows:
 
-perl find_companies.pl c:\find_companies\input.txt c:\find_companies\criteria.txt > c:\find_companies\results.csv
+perl find_companies.pl testing\input.txt testing\criteria.txt > c:\find_companies\results.csv
+
+Where all file names are specified relative to c:\find_companies.
  
 The format of the configuration file is as follows where each line
 contains one or more regular expressions which the data in the 
@@ -26,19 +28,19 @@ field to be output and all fields for which criteria are specified must
 match at least one of the match criteria specified for that field for
 any data for a specific company to be output ( see OutputRow ).
  
- Column Number , Regex 1, Regex 2,....Regex n
+ Column Name , Regex 1, Regex 2,....Regex n
 
 e.g.
 
-0,^ITECCO,STRAT		! CompanyName
-6,.*			! PostTown
-7,.*			! County
-8,.*			! Country
-11,Active		! CompanyStatus
-26,.*			! SICCode1
-27,.*			! SICCode2
-28,.*			! SICCode3
-29,.*			! SICCode4
+CompanyName,^ITECCO,STRAT
+RegAddress.PostTown,.*
+RegAddress.County,.*
+RegAddress.Country,.*
+CompanyStatus,Active
+SICCode.SicText_1,.*
+SICCode.SicText_2,.*
+SICCode.SicText_3,.*
+SICCode.SicText_4,.*
  
 This example configuration file will output the following data:
  

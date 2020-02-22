@@ -15,7 +15,9 @@
 # A typical invokation of this script where the output is captured to file would
 # be as follows:
 # 
-# perl find_companies.pl c:\find_companies\input.txt c:\find_companies\criteria.txt > c:\find_companies\results.csv
+# perl find_companies.pl testing\input.txt testing\criteria.txt > results.csv
+#
+# Where all file names are specified relative to c:\find_companies.
 #
 # The format of the configuration file is as follows where each line
 # contains one or more regular expressions which the data in the 
@@ -25,19 +27,19 @@
 # match at least one of the match criteria specified for that field for
 # any data for a specific company to be output ( see OutputRow ).
 #
-#  Columen Number , Regex 1, Regex 2,....Regex 3
+#  Column Name , Regex 1, Regex 2,....Regex 3
 # 
 # e.g.
 # 
-# 0,^ITECCO,STRAT	! CompanyName
-# 6,.*				! PostTown
-# 7,.*				! County
-# 8,.*				! Country
-# 11,Active			! CompanyStatus
-# 26,.*				! SICCode1
-# 27,.*				! SICCode2
-# 28,.*				! SICCode3
-# 29,.*				! SICCode4
+# CompanyName,^ITECCO,STRAT
+# RegAddress.PostTown,.*
+# RegAddress.County,.*
+# RegAddress.Country,.*
+# CompanyStatus,Active
+# SICCode.SicText_1,.*
+# SICCode.SicText_2,.*
+# SICCode.SicText_3,.*
+# SICCode.SicText_4,.*
 #
 # This example configuration file will output the following data:
 #
@@ -66,12 +68,17 @@
 ###############
 
 use strict;
+my $home_directory = 'c:\\find_companies\\';
 my $input_file;
 my $input_filename;
 my $criteria_file;
 my $criteria_filename;
 my @criteria_specifications;
+my $field_name;
 my @field_names;
+my %field_numbers;
+my $fields_file;
+my $fields_filename = $home_directory.'field_names.txt';
 
 # Documentation indicates the each line in the csv data file
 # contains 55 values ( data columns )
@@ -105,12 +112,34 @@ return $input_line;
 
 }
 
+sub BuildHash {
+
+# Builds a hash where the key is the data file field name
+# and the value is the data file field number ( index ).
+# This routine also writes out a list of the data fields 
+# available in the data file.
+
+my $field_name;
+my $field_number = 0;
+
+foreach $field_name (@field_names) {
+
+    # Trim leading spaces.
+	$field_name =~ s/^\s+//;
+	$field_numbers{$field_name} = $field_number;
+	$field_number++;
+}
+
+}
+
 sub CheckCriteria {
 
 # Checks if the criteria file is empty and if not that: 
 #
 # - The first value defined in each line of the criteria file is a valid column number 
 # - That no match criteria are empty strings
+#
+# Sub routine BuildHash must be called prior to this sub-routine.
 
 my $specification_index = 0;
 my $specification_line;
@@ -118,9 +147,9 @@ my @criteria_array;
 my $criteria_index;
 my $match_criteria;
 my $match_length;
+my $column_name;
 my $column_number;
 my $line_number;
-my $saved_column = -1;
 
 if ( @criteria_specifications == 0 ) {
 
@@ -134,21 +163,17 @@ foreach $specification_line (@criteria_specifications) {
 	
 	if ( @criteria_array > 1 ) {
 		
-		$column_number = $criteria_array[0];
-	
-		if ( ( $column_number >= $max_column ) || not( $column_number =~ /^[0-9]*$/ ) ) {
-	
-			DisplayError ( "ERROR : Invalid data column number $column_number used on line $line_number of $criteria_filename" );
-		}
+		$column_name = $criteria_array[0];
 		
-		if ( $column_number <= $saved_column ) {
-		
-			DisplayError ( "ERROR : Data column number $column_number used on line $line_number of $criteria_filename should be higher than $saved_column" );
-			
+		if( exists($field_numbers{$column_name}) ) {
+
+			$column_number = $field_numbers{$column_name};
+   
 		} else {
-		
-				$saved_column = $column_number;
+
+			DisplayError ( "ERROR : Invalid data column name $column_name used on line $line_number of $criteria_filename see file $fields_filename" );
 		}
+	
 	
 		foreach $match_criteria (@criteria_array) {
 	
@@ -157,13 +182,13 @@ foreach $specification_line (@criteria_specifications) {
 
 			if ( $match_length == 0 ) {
 			
-				DisplayError ( "ERROR : Missing column number or match criteria on line $line_number of $criteria_filename" );
+				DisplayError ( "ERROR : Missing column name or match criteria on line $line_number of $criteria_filename" );
 			}
 		}
 		
 	}	else {
 	
-		DisplayError ( "ERROR : Missing column number or match criteria on line $line_number of $criteria_filename" );
+		DisplayError ( "ERROR : Missing column name or match criteria on line $line_number of $criteria_filename" );
 	
 	}
 	
@@ -177,6 +202,7 @@ sub OutputRow {
 # Outputs company data matching criteria.
 
 my @input_array;
+my $column_name;
 my $column_number;
 my $specification_index = 0;
 my $specification_line;
@@ -200,7 +226,8 @@ foreach $specification_line ( @criteria_specifications ) {
 	# Determine which field (column) the match criteria relate to.
 
 	@criteria_array = split(',',$specification_line);
-	$column_number = $criteria_array[0];
+	$column_name = $criteria_array[0];
+	$column_number = $field_numbers{$column_name};
 	
 	# Do nothing if the column does not exist.
 	
@@ -263,8 +290,8 @@ if ( @ARGV != 2 ) {
 	DisplayError ( "ERROR : This script requires an input and a criteria file name as arguments" );
 }
 
-$input_filename = $ARGV[0];
-$criteria_filename = $ARGV[1];
+$input_filename = $home_directory.$ARGV[0];
+$criteria_filename = $home_directory.$ARGV[1];
 
 # Open input file.
 
@@ -276,6 +303,22 @@ if ( $max_column != @field_names ) {
 
 	DisplayError ( "ERROR : The number of data fields in the input file has changed from $max_column  " );
 }
+
+# Build field name/field number hash and output field names data
+
+BuildHash;
+
+$fields_file = ">".$fields_filename;
+open (FIELDS,$fields_file) or DisplayError ( "ERROR : fields file $fields_filename could not be created" );
+
+foreach $field_name (@field_names) {
+
+    # Trim leading white space
+    $field_name =~ s/^\s+//;
+	print FIELDS "$field_name\n";
+
+}
+close(FIELDS);
 
 # Open criteria file and read data.
 

@@ -2,9 +2,12 @@
 #
 # This script will search through a csv file containing company data
 # using regular expressions defined in a configuration file. The data
-# which matches (see below ) these criteria will be output to the console 
-# and can be redirected to a file. The input csv file is provided by Companies 
-# House and it's contents are detailed at:
+# which matches (see below ) these regular expressions (criteria) will 
+# be output to the console and can be redirected to a file. Please note 
+# that any ',' characters contained within a data value will be removed 
+# so the number of columns for each data row output is always the same. 
+# The input csv file is provided by Companies House and it's contents are 
+# detailed at:
 # 
 # http://download.companieshouse.gov.uk/en_output.html 
 #
@@ -17,7 +20,8 @@
 # 
 # perl find_companies.pl testing\input.txt testing\criteria.txt > results.csv
 #
-# Where all file names are specified relative to c:\find_companies.
+# Where all file names are specified relative to the diretory in which find_companies.pl
+# is installed
 #
 # The format of the configuration file is as follows where each line
 # contains one or more regular expressions which the data in the 
@@ -53,6 +57,12 @@
 # The third SIC code used to classify the company
 # The fourth SIC code used to classify the company
 #
+# The names of all the data fields contained in the Companies House download file are written to
+# file 'field_names.txt' and are extracted from the header row of the download file. Any 'Column Name'
+# specified in a configuration file should match one of the data field names listed in this file. Before
+# creating a configuration file this script should be run once specifying only the name of downloaded
+# Companies House data file to populate 'field_names.txt'.
+#
 # This scripts does limited checks on:
 #
 # - The command line arguments given
@@ -68,7 +78,13 @@
 ###############
 
 use strict;
-my $home_directory = 'c:\\find_companies\\';
+use Cwd; 
+my $home_directory = getcwd();
+
+# Correct directory name for use in Windows
+$home_directory =~ s/\//\\/g;
+$home_directory = $home_directory.'\\';
+
 my $input_file;
 my $input_filename;
 my $criteria_file;
@@ -78,7 +94,7 @@ my $field_name;
 my @field_names;
 my %field_numbers;
 my $fields_file;
-my $fields_filename = $home_directory.'field_names.txt';
+my $fields_filename = 'field_names.txt';
 
 # Documentation indicates the each line in the csv data file
 # contains 55 values ( data columns )
@@ -98,9 +114,9 @@ sub DisplayError {
 
 sub ProcessInput {
 
-# Replaces field delimiter "," with "#~" to allow
+# Replaces field delimiter characters '","' with '#~' to allow
 # split to be used. (NOTE) So far I have not found any data rows
-# with "#~" included.
+# with '#~' included.
 
 my $input_line;
 
@@ -212,6 +228,7 @@ my $output_line;
 my $criteria_matched;
 my $match_criteria;
 my $partial_matches = 0;
+my $next_field;
 
 # Split input row contents.
 
@@ -234,8 +251,14 @@ foreach $specification_line ( @criteria_specifications ) {
 	if ( $column_number < @input_array ) {
 	
 		# Prepare the output line.
+		#
+		# Note
+		# ----
+		# I remove any ',' character found in any field value		
 	
-		$output_line = $output_line.$input_array[$column_number].",";
+	    $next_field = $input_array[$column_number];
+		$next_field =~ s/,//g;
+		$output_line = $output_line.$next_field.",";
 	
 		# Perform searches using all match criteria specified.
 		
@@ -290,18 +313,18 @@ if ( @ARGV != 2 ) {
 	DisplayError ( "ERROR : This script requires an input and a criteria file name as arguments" );
 }
 
-$input_filename = $home_directory.$ARGV[0];
-$criteria_filename = $home_directory.$ARGV[1];
+$input_filename = $ARGV[0];
+$criteria_filename = $ARGV[1];
 
 # Open input file.
 
-$input_file = "<".$input_filename;
+$input_file = "<".$home_directory.$input_filename;
 open (INPUT,$input_file) or DisplayError ( "ERROR : Input file $input_filename could not be openned" );
 @field_names = split(',',<INPUT>);
 
 if ( $max_column != @field_names ) {
 
-	DisplayError ( "ERROR : The number of data fields in the input file has changed from $max_column  " );
+	DisplayError ( "ERROR : The number of data fields in the input file $input_filename has changed from $max_column  " );
 }
 
 # Build field name/field number hash and output field names data
@@ -322,7 +345,7 @@ close(FIELDS);
 
 # Open criteria file and read data.
 
-$criteria_file = "<".$criteria_filename;
+$criteria_file = "<".$home_directory.$criteria_filename;
 open (CRITERIA,$criteria_file) or DisplayError ( "ERROR : Criteria file $criteria_filename could not be openned" );
 @criteria_specifications = <CRITERIA>;
 close(CRITERIA);

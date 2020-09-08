@@ -15,3 +15,5 @@ find_companies_usage.txt | Script usage information
 find_companies_testing.txt | Script testing information
 freeDataProductDataset.pdf | Details of Companies House download format.
 
+Testing data and utilities are delivered in the 'testing' sub-folder. 
+
